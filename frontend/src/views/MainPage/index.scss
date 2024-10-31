@@ -1,0 +1,51 @@
+#mainPage{
+    margin: auto;
+    max-width: 90vw;
+
+    .mainContent{
+        margin-top: 4rem;
+        margin-bottom: 4rem;
+        justify-content: space-around;
+        display: flex;
+        .backwardButton{
+            height: 7rem;
+            width: 7rem;
+            margin-right: 3rem;
+            margin-bottom: 1.5rem;
+            cursor: pointer;
+            align-self: flex-end;
+        }
+        .diary{
+            width: 90%;
+            max-width: 800px;
+            min-height: 450px;
+            background-color: #fff;
+            padding: 2rem;
+            border-radius: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+            .addButton{
+                height: 4.5rem;
+                width: 4.5rem;
+                cursor: pointer;
+                position: absolute; 
+                bottom: 2rem; 
+                right: 2rem;
+            }
+        }
+        .mbti{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: end;
+            img{
+                width: 23rem;
+            }
+            p{
+                margin-top: 2rem;
+                font-size: x-large;
+                font-weight: bold;
+            }
+        }
+    }
+}

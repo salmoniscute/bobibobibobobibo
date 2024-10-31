@@ -1,6 +1,7 @@
 from fastapi import APIRouter,HTTPException, status , Depends
 from crud.user import UserCrudManager
 from schemas import user as UserSchema
+from auth.passwd import get_password_hash
 from .depends import  check_user_id
 
 permission_denied = HTTPException(
@@ -33,7 +34,7 @@ async def create_user(newUser: UserSchema.UserCreate):
     if await UserCrud.get(newUser.uid ):
         raise already_exists
     
-    #newUser.password = get_password_hash(newUser.password)
+    newUser.password = get_password_hash(newUser.password)
     user = await UserCrud.create(newUser)
 
     return user

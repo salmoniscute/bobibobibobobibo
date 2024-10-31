@@ -1,12 +1,13 @@
-#navigateBar{
+#diary {
     width: calc(100% - max(10vw, 100vw - 1200px));
     max-width: calc(1200px);
     margin: 0;
-    height: 3rem;
+    height: 4rem;
     display: flex;
     justify-content: space-between;
-    background-color: #ffd5cb;
+    background-color: #cbe4ff;
 
     padding: 0.95rem max(5vw, calc(50vw - 600px));
 
+    
 }
