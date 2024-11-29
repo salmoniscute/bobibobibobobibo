@@ -3,17 +3,31 @@
     max-width: 90vw;
 
     .mainContent{
-        margin-top: 4rem;
-        margin-bottom: 4rem;
+        margin-top: 4.5rem;
+        margin-bottom: 4.5rem;
         justify-content: space-around;
         display: flex;
-        .backwardButton{
-            height: 7rem;
-            width: 7rem;
-            margin-right: 3rem;
-            margin-bottom: 1.5rem;
-            cursor: pointer;
-            align-self: flex-end;
+        .buttons{
+           display: flex;
+           flex-direction: column; 
+            margin-right: 3em;
+            margin-bottom: 1em;
+            justify-content: end;
+           .forwardButton{
+                cursor: pointer;
+                height: 4rem;
+                width: 4rem;
+           }
+           .backwardButton{
+                cursor: pointer;
+                height: 4rem;
+                width: 4rem;
+           }
+           .addButton{
+                cursor: pointer;
+                height: 4rem;
+                width: 4rem;
+           }
         }
         .diary{
             width: 90%;
@@ -24,13 +38,10 @@
             border-radius: 2rem;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             position: relative;
-            .addButton{
-                height: 4.5rem;
-                width: 4.5rem;
-                cursor: pointer;
-                position: absolute; 
-                bottom: 2rem; 
-                right: 2rem;
+            .title{
+                font-size: x-large;
+                font-weight: 600;
+                margin-bottom: 0em;
             }
         }
         .mbti{

@@ -5,8 +5,17 @@
     height: 3rem;
     display: flex;
     justify-content: space-between;
-    background-color: #ffd5cb;
+    background-color: #d5f2ff;
 
     padding: 0.95rem max(5vw, calc(50vw - 600px));
+    .logo {
+        display: block;
+        text-decoration: none;
+        color: #000;
+        margin: 0;
+        h1{
+            margin: 0;
+        }
+    }
 
 }

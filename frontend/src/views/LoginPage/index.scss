@@ -1,0 +1,50 @@
+#loginPage{
+    position: relative;
+    max-width: calc(1200px);
+    padding: 8rem max(5vw, calc(50vw - 570px));
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    p{
+        font-size: x-large;
+        font-weight: 600;
+    }
+    .info{
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 3em;
+        p{
+            font-size: medium;
+        }
+        .loginInput{
+            border-radius: 0.2em;
+            width: 25em;
+            height: 2em;
+            border: 0; 
+            font-size: large;
+            resize : none; 
+            outline: none;
+            border: solid;
+            border-color: #b6c5ff;
+            margin-bottom: 1em;
+            line-height: 2em;
+            padding-left: 1em;
+        }
+    }
+    .loginButton{
+        display: flex;
+        justify-content: center;
+        p{
+            font-weight: 600;
+            font-size: large;
+        }
+        cursor: pointer;
+        color: white;
+        width: 15em;
+        background-color: #001a81;
+        border-radius: 2em;
+    }
+    
+}

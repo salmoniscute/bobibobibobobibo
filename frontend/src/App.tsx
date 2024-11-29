@@ -5,8 +5,15 @@ import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import NavigateBar from "./components/NavigateBar";
 import Footer from "./components/Footer";
 import MainPage from "./views/MainPage";
+import LoginPage from "./views/LoginPage";
 import userDataContext from "./context/userData";
 import { User } from "./schemas/user";
+
+function Logout(): ReactElement {
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+    return <Navigate to="/" />
+}
 
 export default function App(): ReactElement {
     const [refreshToken, setRefreshToken] = useState<string>(
@@ -27,7 +34,27 @@ export default function App(): ReactElement {
             <div id="app">
                 <NavigateBar />
                 <Routes>
-                    <Route path="/" element={<MainPage />} />
+                    <Route
+                        path="/login"
+                        element={
+                            userData === null ? (
+                                <LoginPage setRefreshToken={setRefreshToken} />
+                            ) : (
+                                <Navigate to="/" />
+                            )
+                        }
+                    />
+                    <Route
+                        path="/"
+                        element={
+                            userData === null ? (
+                                <Navigate to="/login" />
+                            ) : (
+                                <MainPage />
+                            )
+                        }
+                    />
+                    <Route path="/logout" element={<Logout />} />
                     <Route path="*" element={<Navigate to="/" />} />
                 </Routes>
                 <Footer />

@@ -6,7 +6,7 @@ let access_token = "";
 let refresh_token = "";
 
 export async function login(username: string, password: string): Promise<User> {
-    let url = "/auth/login";
+    let url = "http://localhost:8080/auth/login";
     try {
         const response = await axios.post(url,"username="+username+"&password="+password);
         access_token = response.data.access_token;
@@ -23,7 +23,7 @@ export async function login(username: string, password: string): Promise<User> {
 }
  
 export async function getUser(uid:string): Promise<User| null>{
-    let url = "/user/" + uid;
+    let url = "http://localhost:8080/user/" + uid;
     
     try {
         const response = await axios.get(url,);
@@ -37,7 +37,7 @@ export async function getUser(uid:string): Promise<User| null>{
 }
 
 export async function refreshToken(){
-    let url = "/auth/refresh";
+    let url = "http://localhost:8080/auth/refresh";
     try {
         const response = await axios.post(url,{
             "refresh_token":localStorage.getItem("refresh_token")
