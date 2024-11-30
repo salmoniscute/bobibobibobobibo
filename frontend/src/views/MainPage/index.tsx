@@ -23,7 +23,8 @@ export default function MainPage(): ReactElement {
     const [diaryList, setDiaryList] = useState<Array<Diary>>([]);
     const [diary, setDiary] = useState<Diary>();
     const [currentDiary, setCurrentDiary] = useState(0);
-    const [mbtiColor, setMbtiColor] = useState<string>("");
+    const [mbtiColorButton, setMbtiColorButton] = useState<string>("");
+    const [mbtiColorNotice, setMbtiColorNotice] = useState<string>("");
 
     const userData = useContext(userDataContext);
 
@@ -66,11 +67,17 @@ export default function MainPage(): ReactElement {
         return formattedDate;
     };
     const setMbtiButtonColor = (mbti: string) => {
-        const categoryColors: { [key: string]: string } = {
+        const categoryColorsBotton: { [key: string]: string } = {
             Analysts: "blue",
             Diplomats: "green",
             Sentinels: "purple",
             Explorers: "yellow",
+        };
+        const categoryColorsNotice: { [key: string]: string } = {
+            Analysts: "#C9EAFB",
+            Diplomats: "#B4E9B4",
+            Sentinels: "#E8CEED",
+            Explorers: "#FFFFBF",
         };
 
         const mbtiGroups: { [key: string]: string } = {
@@ -93,14 +100,34 @@ export default function MainPage(): ReactElement {
         };
 
         const group = mbtiGroups[mbti];
-        setMbtiColor(categoryColors[group] || "gray");
+        setMbtiColorButton(categoryColorsBotton[group] || "gray");
+        setMbtiColorNotice(categoryColorsNotice[group] || "gray");
+    };
+
+    const isToday = (release_time: string): boolean => {
+        const today = new Date();
+        const releaseDate = new Date(release_time);
+
+        return (
+            releaseDate.getFullYear() === today.getFullYear() &&
+            releaseDate.getMonth() === today.getMonth() &&
+            releaseDate.getDate() === today.getDate()
+        );
     };
 
     return (
         <div id="mainPage">
             <div className="mainContent">
-                <div className="buttons" style={{ color: mbtiColor }}>
-                    <IoMdAddCircle className="addButton" />
+                <div className="buttons" style={{ color: mbtiColorButton }}>
+                    {diaryList.length != 0 &&
+                    diaryList[diaryList.length - 1] &&
+                    isToday(
+                        diaryList[diaryList.length - 1]?.release_time || ""
+                    ) ? (
+                        <div></div>
+                    ) : (
+                        <IoMdAddCircle className="addButton" />
+                    )}
                     <IoCaretForwardCircleSharp
                         className="forwardButton"
                         onClick={forward}
@@ -110,10 +137,30 @@ export default function MainPage(): ReactElement {
                         onClick={backward}
                     />
                 </div>
+                <div
+                    className="notice"
+                    style={{ backgroundColor: mbtiColorNotice }}
+                >
+                    {diaryList &&
+                    diaryList[diaryList.length - 1] &&
+                    isToday(
+                        diaryList[diaryList.length - 1]?.release_time || ""
+                    ) ? (
+                        <div>you have posted diary today</div>
+                    ) : (
+                        <div>you have not posted diary today</div>
+                    )}
+                </div>
                 <div className="diary">
-                    <p className="title">{diary?.title}</p>
-                    <p>{setTimeString(diary?.release_time || "")}</p>
-                    <p className="content">{diary?.content}</p>
+                    {diaryList.length != 0 ? (
+                        <div>
+                            <p className="title">{diary?.title}</p>
+                            <p>{setTimeString(diary?.release_time || "")}</p>
+                            <p className="content">{diary?.content}</p>
+                        </div>
+                    ) : (
+                        <div>nothing</div>
+                    )}
                 </div>
                 <div className="mbti">
                     <img src="/assets/ENFJ.png"></img>
