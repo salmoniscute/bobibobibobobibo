@@ -8,7 +8,6 @@ import {
     useState,
     useEffect,
 } from "react";
-import { Link } from "react-router-dom";
 import {
     IoCaretBackCircleSharp,
     IoCaretForwardCircleSharp,
@@ -17,11 +16,13 @@ import { IoMdAddCircle } from "react-icons/io";
 import "./index.scss";
 import { getDiaryList } from "../../api/diary";
 import { Diary } from "../../schemas/diary";
+import PostEditor from "../../components/PostEditor";
 import userDataContext from "../../context/userData";
 
 export default function MainPage(): ReactElement {
     const [diaryList, setDiaryList] = useState<Array<Diary>>([]);
     const [diary, setDiary] = useState<Diary>();
+    const [openEditor, setopenEditor] = useState(false);
     const [currentDiary, setCurrentDiary] = useState(0);
     const [mbtiColorButton, setMbtiColorButton] = useState<string>("");
     const [mbtiColorNotice, setMbtiColorNotice] = useState<string>("");
@@ -30,8 +31,15 @@ export default function MainPage(): ReactElement {
 
     useEffect(() => {
         handleDiaryList();
-        setMbtiButtonColor(userData ? userData.mbti : "ENFJ");
+        setMbtiColor(userData ? userData.mbti : "ENFJ");
     }, []);
+
+    const Open = () => {
+        setopenEditor(true);
+    };
+    const Close = () => {
+        setopenEditor(false);
+    };
 
     const backward = () => {
         if (currentDiary == 0) {
@@ -51,11 +59,13 @@ export default function MainPage(): ReactElement {
     };
 
     const handleDiaryList = () => {
-        getDiaryList(userData ? userData.uid : null).then((data) => {
+        getDiaryList(userData ? userData.uid : "").then((data) => {
+            console.log(data); // Log the fetched diary list
             setDiaryList(data);
-            setCurrentDiary(diaryList.length - 1);
-            setDiary(diaryList[currentDiary]);
-            //console.log(diaryList);
+            const lastDiary = data[data.length - 1];
+            setCurrentDiary(data.length - 1);
+            setDiary(lastDiary);
+            console.log(lastDiary); // Log the last diary immediately
         });
     };
 
@@ -66,7 +76,7 @@ export default function MainPage(): ReactElement {
         }月${releaseDate.getDate()}日`;
         return formattedDate;
     };
-    const setMbtiButtonColor = (mbti: string) => {
+    const setMbtiColor = (mbti: string) => {
         const categoryColorsBotton: { [key: string]: string } = {
             Analysts: "blue",
             Diplomats: "green",
@@ -126,7 +136,7 @@ export default function MainPage(): ReactElement {
                     ) ? (
                         <div></div>
                     ) : (
-                        <IoMdAddCircle className="addButton" />
+                        <IoMdAddCircle className="addButton" onClick={Open} />
                     )}
                     <IoCaretForwardCircleSharp
                         className="forwardButton"
@@ -156,7 +166,12 @@ export default function MainPage(): ReactElement {
                         <div>
                             <p className="title">{diary?.title}</p>
                             <p>{setTimeString(diary?.release_time || "")}</p>
-                            <p className="content">{diary?.content}</p>
+                            <p
+                                className="content"
+                                dangerouslySetInnerHTML={{
+                                    __html: diary?.content || "",
+                                }}
+                            ></p>
                         </div>
                     ) : (
                         <div>nothing</div>
@@ -166,6 +181,14 @@ export default function MainPage(): ReactElement {
                     <img src="/assets/ENFJ.png"></img>
                     <p>{userData?.mbti}</p>
                 </div>
+            </div>
+            <div className={openEditor === true ? "" : "editor"}>
+                <PostEditor
+                    onClose={Close}
+                    updatePost={handleDiaryList}
+                    mbtiColorNotice={mbtiColorNotice}
+                    mbtiColorButton={mbtiColorButton}
+                />
             </div>
         </div>
     );

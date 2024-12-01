@@ -28,8 +28,8 @@ export async function getDiary(id:number): Promise<Diary>{
     return diary ; 
 }
 
-export async function postDiary(diary:Diary):Promise<Diary | null>{
-    let url = "http://localhost:8080/diary?uid="+diary.uid;
+export async function postDiary(diary:Diary , uid:string):Promise<Diary | null>{
+    let url = "http://localhost:8080/diary?uid="+uid;
     try {
         const response = await axios.post(url,diary);
     }

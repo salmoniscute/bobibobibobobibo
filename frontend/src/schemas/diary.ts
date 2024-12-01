@@ -1,5 +1,5 @@
 export interface Diary {
-    uid: string,
+    uid?: string,
     id?: number,
     release_time?: string,
     title: string,
