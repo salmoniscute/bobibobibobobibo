@@ -36,7 +36,7 @@ def feedback_inference(content):
     # # 解码生成的输出
     # output_text = tokenizer.decode(output[0], skip_special_tokens=True)
 
-    return input_text
+    return "input_text   input_text   input_text   input_text   input_text"
 
 
 @crud_class_decorator

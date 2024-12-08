@@ -44,16 +44,22 @@
         .diary{
             width: 90%;
             max-width: 800px;
-            min-height: 450px;
+            height: 450px;
             background-color: #fff;
             padding: 2rem;
             border-radius: 2rem;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             position: relative;
+            overflow-y: scroll;
             .title{
                 font-size: x-large;
                 font-weight: 600;
                 margin-bottom: 0em;
+            }
+            .line{
+                margin: 1.5em 0em;
+                width: 100%;
+                border-top: 2px solid;
             }
         }
         .mbti{

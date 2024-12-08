@@ -19,19 +19,19 @@ export default function Footer(): ReactElement {
     const [mbtiColorNotice, setMbtiColorNotice] = useState<string>("");
     useEffect(() => {
         setMbtiColor(userData ? userData.mbti : "ENFJ");
-    }, []);
+    }, [userData]);
 
     const setMbtiColor = (mbti: string) => {
         const categoryColorsBotton: { [key: string]: string } = {
-            Analysts: "blue",
+            Sentinels: "#32acbe",
             Diplomats: "green",
-            Sentinels: "purple",
-            Explorers: "yellow",
+            Analysts: "purple",
+            Explorers: "#dda900",
         };
         const categoryColorsNotice: { [key: string]: string } = {
-            Analysts: "#C9EAFB",
+            Sentinels: "#C9EAFB",
             Diplomats: "#B4E9B4",
-            Sentinels: "#E8CEED",
+            Analysts: "#E8CEED",
             Explorers: "#FFFFBF",
         };
 

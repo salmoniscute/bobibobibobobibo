@@ -26,6 +26,8 @@ export default function MainPage(): ReactElement {
     const [currentDiary, setCurrentDiary] = useState(0);
     const [mbtiColorButton, setMbtiColorButton] = useState<string>("");
     const [mbtiColorNotice, setMbtiColorNotice] = useState<string>("");
+    const [aiFeedbackTyping, setAiFeedbackTyping] = useState<string>("");
+    const [hasTyped, setHasTyped] = useState<boolean>(false);
 
     const userData = useContext(userDataContext);
 
@@ -33,6 +35,35 @@ export default function MainPage(): ReactElement {
         handleDiaryList();
         setMbtiColor(userData ? userData.mbti : "ENFJ");
     }, []);
+
+    useEffect(() => {
+        // 僅對最新日記啟用打字效果
+        if (
+            diary?.ai_feedback &&
+            !hasTyped &&
+            currentDiary === diaryList.length - 1
+        ) {
+            typeEffect(diary.ai_feedback);
+        } else {
+            setAiFeedbackTyping(diary?.ai_feedback || "");
+        }
+    }, [diary?.ai_feedback]);
+
+    const typeEffect = (text: string) => {
+        setAiFeedbackTyping(""); // 清空現有的文字
+        let index = 0;
+
+        const interval = setInterval(() => {
+            const currentChar =
+                text.charAt(index) === " " ? "&nbsp;" : text.charAt(index);
+            setAiFeedbackTyping((prev) => prev + currentChar);
+            index++;
+            if (index === text.length) {
+                clearInterval(interval);
+                setHasTyped(true);
+            }
+        }, 50); // 每個字的間隔時間
+    };
 
     const Open = () => {
         setopenEditor(true);
@@ -78,15 +109,15 @@ export default function MainPage(): ReactElement {
     };
     const setMbtiColor = (mbti: string) => {
         const categoryColorsBotton: { [key: string]: string } = {
-            Analysts: "blue",
+            Sentinels: "#32acbe",
             Diplomats: "green",
-            Sentinels: "purple",
-            Explorers: "yellow",
+            Analysts: "purple",
+            Explorers: "#dda900",
         };
         const categoryColorsNotice: { [key: string]: string } = {
-            Analysts: "#C9EAFB",
+            Sentinels: "#C9EAFB",
             Diplomats: "#B4E9B4",
-            Sentinels: "#E8CEED",
+            Analysts: "#E8CEED",
             Explorers: "#FFFFBF",
         };
 
@@ -138,6 +169,7 @@ export default function MainPage(): ReactElement {
                     ) : (
                         <IoMdAddCircle className="addButton" onClick={Open} />
                     )}
+                    <IoMdAddCircle className="addButton" onClick={Open} />
                     <IoCaretForwardCircleSharp
                         className="forwardButton"
                         onClick={forward}
@@ -172,13 +204,23 @@ export default function MainPage(): ReactElement {
                                     __html: diary?.content || "",
                                 }}
                             ></p>
+                            <div
+                                className="line"
+                                style={{ color: mbtiColorButton }}
+                            ></div>
+                            <p
+                                className="ai_feedback"
+                                dangerouslySetInnerHTML={{
+                                    __html: aiFeedbackTyping,
+                                }}
+                            ></p>
                         </div>
                     ) : (
                         <div>nothing</div>
                     )}
                 </div>
                 <div className="mbti">
-                    <img src="/assets/ENFJ.png"></img>
+                    <img src={`/assets/${userData?.mbti}.png`} />
                     <p>{userData?.mbti}</p>
                 </div>
             </div>
