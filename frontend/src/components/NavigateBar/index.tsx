@@ -64,11 +64,30 @@ export default function NavigateBar(): ReactElement {
                 <h1>HIHI</h1>
             </Link>
             {userData === null ? (
-                <Link className="loginButton body-bold" to={"/login"}>
-                    LOGIN
-                </Link>
+                <div className="buttons">
+                    <Link
+                        className="loginButton body-bold"
+                        to={"/login"}
+                        style={{ backgroundColor: mbtiColorButton }}
+                    >
+                        Login
+                    </Link>
+                    <Link
+                        className="signupButton body-bold"
+                        to={"/signup"}
+                        style={{ backgroundColor: mbtiColorButton }}
+                    >
+                        Sign Up
+                    </Link>
+                </div>
             ) : (
-                <Link to="/logout">LOGOUT</Link>
+                <Link
+                    to="/logout"
+                    className="logoutButton body-bold"
+                    style={{ backgroundColor: mbtiColorButton }}
+                >
+                    LOGOUT
+                </Link>
             )}
         </div>
     );

@@ -6,13 +6,14 @@ import NavigateBar from "./components/NavigateBar";
 import Footer from "./components/Footer";
 import MainPage from "./views/MainPage";
 import LoginPage from "./views/LoginPage";
+import SignUpPage from "./views/SignUpPage";
 import userDataContext from "./context/userData";
 import { User } from "./schemas/user";
 
 function Logout(): ReactElement {
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
-    return <Navigate to="/" />
+    return <Navigate to="/" />;
 }
 
 export default function App(): ReactElement {
@@ -39,6 +40,16 @@ export default function App(): ReactElement {
                         element={
                             userData === null ? (
                                 <LoginPage setRefreshToken={setRefreshToken} />
+                            ) : (
+                                <Navigate to="/" />
+                            )
+                        }
+                    />
+                    <Route
+                        path="/signup"
+                        element={
+                            userData === null ? (
+                                <SignUpPage setRefreshToken={setRefreshToken} />
                             ) : (
                                 <Navigate to="/" />
                             )

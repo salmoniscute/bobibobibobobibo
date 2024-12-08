@@ -1,13 +1,13 @@
 #navigateBar{
-    width: calc(100% - max(10vw, 100vw - 1200px));
-    max-width: calc(1200px);
+    width: calc(100% - max(10vw, 100vw - 1300px));
+    max-width: calc(1300px);
     margin: 0;
     height: 3rem;
     display: flex;
     justify-content: space-between;
     background-color: #d5f2ff;
 
-    padding: 0.95rem max(5vw, calc(50vw - 600px));
+    padding: 0.95rem max(5vw, calc(50vw - 650px));
     .logo {
         display: block;
         text-decoration: none;
@@ -16,6 +16,35 @@
         h1{
             margin: 0;
         }
+    }
+    .buttons{
+        display: flex;
+        .loginButton{
+            align-self: center;
+            margin-right: 1em;
+            padding: 0.5em 1em;
+            border-radius: 0.5rem;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .signupButton{
+            align-self: center;
+            padding: 0.5em 1em;
+            border-radius: 0.5rem;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+    }
+    .logoutButton{
+        align-self: center;
+        padding: 0.5em 1em;
+        border-radius: 0.5rem;
+        color: white;
+        text-decoration: none;
+        font-weight: 600;
     }
 
 }

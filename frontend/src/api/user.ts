@@ -1,6 +1,6 @@
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
-import { User } from "../schemas/user"
+import { User , SignUpUser } from "../schemas/user"
 
 let access_token = "";
 let refresh_token = "";
@@ -21,6 +21,20 @@ export async function login(username: string, password: string): Promise<User> {
 
     return jwtDecode(access_token) as User;
 }
+
+export async function signUp(user:SignUpUser):Promise<Boolean>{
+    let url = "http://localhost:8080/user";
+    try {
+        const response = await axios.post(url,user);
+        return true
+    }
+    catch {  
+        //return ;
+    }
+
+    return false;
+}
+ 
  
 export async function getUser(uid:string): Promise<User| null>{
     let url = "http://localhost:8080/user/" + uid;

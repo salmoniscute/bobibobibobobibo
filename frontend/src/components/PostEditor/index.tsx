@@ -88,7 +88,6 @@ export default function PostEditor(props: propsType): ReactElement {
             const diary: Diary = {
                 title: title,
                 content: content,
-                ai_feedback: "",
             };
             await postDiary(diary, uid);
             updatePost();
