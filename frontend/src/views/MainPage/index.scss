@@ -61,6 +61,26 @@
                 width: 100%;
                 border-top: 2px solid;
             }
+            .icon-with-text {
+                display: inline-flex;
+                position: relative;
+                .ai{
+                    height: 4rem;
+                    width: 4rem;
+                    filter: drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.2));
+                    transform: scaleX(3);  
+                    transform-origin: left; 
+                }
+                .icon-text {
+                    font-size: 18px;  
+                    position:absolute;  
+                    top: 1em;
+                    font-weight: 600;
+                    left:2em;
+                    white-space: nowrap;
+                }
+            }
+            
         }
         .mbti{
             display: flex;

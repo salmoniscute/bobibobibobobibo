@@ -13,6 +13,7 @@ import {
     IoCaretForwardCircleSharp,
 } from "react-icons/io5";
 import { IoMdAddCircle } from "react-icons/io";
+import { BiSolidComment } from "react-icons/bi";
 import "./index.scss";
 import { getDiaryList } from "../../api/diary";
 import { Diary } from "../../schemas/diary";
@@ -207,7 +208,15 @@ export default function MainPage(): ReactElement {
                                 className="line"
                                 style={{ color: mbtiColorButton }}
                             ></div>
-                            <p></p>
+                            <div className="icon-with-text">
+                                <BiSolidComment
+                                    className="ai"
+                                    style={{ color: mbtiColorNotice }}
+                                />
+                                <span className="icon-text">
+                                    Hi {userData?.uid}
+                                </span>
+                            </div>
                             <p
                                 className="ai_feedback"
                                 dangerouslySetInnerHTML={{
