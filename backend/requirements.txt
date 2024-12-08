@@ -9,3 +9,6 @@ passlib==1.7.4
 python-multipart==0.0.17
 bcrypt===4.2.0
 transformers===4.46.2
+PyMySQL==1.1.0
+aiomysql==0.2.0
+cryptography==42.0.5

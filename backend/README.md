@@ -42,14 +42,31 @@ pip install -r requirements.txt
 
 ## Startup database by Docker
 
+1.  Pull MySQL image
+
+```
+docker pull mysql:8.1
+```
+
+2. Run container
+
+```
+docker run --name diary_database -e MYSQL_USER=admin -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=diary -p 3306:3306 --volume diary_mysql:/var/lib/mysql -d mysql:8.1
+
 ## Start uvicorn server
 
 ```
+
 python main.py
+
 ```
 
 ## After starting server , to open swagger
 
 ```
-http://127.0.0.1:8080/docs  (open it on browser)
+
+http://127.0.0.1:8080/docs (open it on browser)
+
+```
+
 ```

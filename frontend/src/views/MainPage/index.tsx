@@ -169,7 +169,6 @@ export default function MainPage(): ReactElement {
                     ) : (
                         <IoMdAddCircle className="addButton" onClick={Open} />
                     )}
-                    <IoMdAddCircle className="addButton" onClick={Open} />
                     <IoCaretForwardCircleSharp
                         className="forwardButton"
                         onClick={forward}
@@ -208,6 +207,7 @@ export default function MainPage(): ReactElement {
                                 className="line"
                                 style={{ color: mbtiColorButton }}
                             ></div>
+                            <p></p>
                             <p
                                 className="ai_feedback"
                                 dangerouslySetInnerHTML={{
