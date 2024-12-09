@@ -13,11 +13,13 @@ import {
     IoCaretForwardCircleSharp,
 } from "react-icons/io5";
 import { IoMdAddCircle } from "react-icons/io";
+import { BiSolidComment } from "react-icons/bi";
 import "./index.scss";
 import { getDiaryList } from "../../api/diary";
 import { Diary } from "../../schemas/diary";
 import PostEditor from "../../components/PostEditor";
 import userDataContext from "../../context/userData";
+import Dots from "../../components/Dots";
 
 export default function MainPage(): ReactElement {
     const [diaryList, setDiaryList] = useState<Array<Diary>>([]);
@@ -27,7 +29,7 @@ export default function MainPage(): ReactElement {
     const [mbtiColorButton, setMbtiColorButton] = useState<string>("");
     const [mbtiColorNotice, setMbtiColorNotice] = useState<string>("");
     const [aiFeedbackTyping, setAiFeedbackTyping] = useState<string>("");
-    const [hasTyped, setHasTyped] = useState<boolean>(false);
+    const [generating, setGenerating] = useState<number>(0);
 
     const userData = useContext(userDataContext);
 
@@ -37,15 +39,8 @@ export default function MainPage(): ReactElement {
     }, []);
 
     useEffect(() => {
-        // 僅對最新日記啟用打字效果
-        if (
-            diary?.ai_feedback &&
-            !hasTyped &&
-            currentDiary === diaryList.length - 1
-        ) {
+        if (diary?.ai_feedback) {
             typeEffect(diary.ai_feedback);
-        } else {
-            setAiFeedbackTyping(diary?.ai_feedback || "");
         }
     }, [diary?.ai_feedback]);
 
@@ -54,15 +49,17 @@ export default function MainPage(): ReactElement {
         let index = 0;
 
         const interval = setInterval(() => {
-            const currentChar =
-                text.charAt(index) === " " ? "&nbsp;" : text.charAt(index);
-            setAiFeedbackTyping((prev) => prev + currentChar);
+            const currentChar = text.charAt(index);
+            if (["!", ".", "?"].includes(currentChar)) {
+                setAiFeedbackTyping((prev) => prev + currentChar + "\n");
+            } else {
+                setAiFeedbackTyping((prev) => prev + currentChar);
+            }
             index++;
             if (index === text.length) {
                 clearInterval(interval);
-                setHasTyped(true);
             }
-        }, 50); // 每個字的間隔時間
+        }, 50);
     };
 
     const Open = () => {
@@ -98,6 +95,11 @@ export default function MainPage(): ReactElement {
             setDiary(lastDiary);
             console.log(lastDiary); // Log the last diary immediately
         });
+    };
+
+    const handleNewPostDiary = (data: Diary) => {
+        setDiaryList([data]);
+        setDiary(data);
     };
 
     const setTimeString = (release_time: string): string => {
@@ -207,13 +209,16 @@ export default function MainPage(): ReactElement {
                                 className="line"
                                 style={{ color: mbtiColorButton }}
                             ></div>
-                            <p></p>
-                            <p
-                                className="ai_feedback"
-                                dangerouslySetInnerHTML={{
-                                    __html: aiFeedbackTyping,
-                                }}
-                            ></p>
+                            <div className="icon-with-text">
+                                <BiSolidComment
+                                    className="ai"
+                                    style={{ color: mbtiColorNotice }}
+                                />
+                                <span className="icon-text">
+                                    Hi {userData?.uid}
+                                </span>
+                            </div>
+                            <p className="ai_feedback">{aiFeedbackTyping}</p>
                         </div>
                     ) : (
                         <div>nothing</div>
@@ -230,6 +235,7 @@ export default function MainPage(): ReactElement {
                     updatePost={handleDiaryList}
                     mbtiColorNotice={mbtiColorNotice}
                     mbtiColorButton={mbtiColorButton}
+                    setNewDiary={handleNewPostDiary}
                 />
             </div>
         </div>

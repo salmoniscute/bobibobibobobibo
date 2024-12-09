@@ -10,7 +10,7 @@ import { Link, useParams } from "react-router-dom";
 import "react-quill/dist/quill.snow.css";
 import userDataContext from "../../context/userData";
 import "./index.scss";
-import { postDiary } from "../../api/diary";
+import { postDiary, getDiary, getDiaryList } from "../../api/diary";
 import { Diary } from "../../schemas/diary";
 
 import { RxCross2 } from "react-icons/rx";
@@ -57,6 +57,7 @@ type propsType = Readonly<{
     updatePost: () => void;
     mbtiColorNotice: string;
     mbtiColorButton: string;
+    setNewDiary: (data: Diary) => void;
 }>;
 
 export default function PostEditor(props: propsType): ReactElement {
@@ -66,7 +67,13 @@ export default function PostEditor(props: propsType): ReactElement {
     const [title, setTitle] = useState("");
     const [save, setSave] = useState(false);
 
-    const { onClose, updatePost, mbtiColorNotice, mbtiColorButton } = props;
+    const {
+        onClose,
+        updatePost,
+        mbtiColorNotice,
+        mbtiColorButton,
+        setNewDiary,
+    } = props;
 
     const Close = () => {
         onClose();
@@ -89,11 +96,22 @@ export default function PostEditor(props: propsType): ReactElement {
                 title: title,
                 content: content,
             };
-            await postDiary(diary, uid);
+            try {
+                const postedDiary = await postDiary(diary, uid);
+                if (postedDiary) setNewDiary(postedDiary);
+                Close();
+                const interval = setInterval(async () => {
+                    const updatedDiary = await getDiary(postedDiary?.id || 1);
+                    if (updatedDiary.ai_feedback != "") {
+                        clearInterval(interval);
+                    }
+                }, 3000);
+            } catch (error) {
+                console.error("Error while posting diary:", error);
+            }
             updatePost();
         } else {
         }
-        Close();
         setContent("");
         setTitle("");
     };

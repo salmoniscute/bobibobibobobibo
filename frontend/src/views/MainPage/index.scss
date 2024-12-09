@@ -51,6 +51,7 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             position: relative;
             overflow-y: scroll;
+            overflow-x: hidden;
             .title{
                 font-size: x-large;
                 font-weight: 600;
@@ -61,6 +62,31 @@
                 width: 100%;
                 border-top: 2px solid;
             }
+            .icon-with-text {
+                display: inline-flex;
+                position: relative;
+                .ai{
+                    height: 4rem;
+                    width: 4rem;
+                    filter: drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.2));
+                    transform: scaleX(3);  
+                    transform-origin: left; 
+                }
+                .icon-text {
+                    font-size: 18px;  
+                    position:absolute;  
+                    top: 1em;
+                    font-weight: 600;
+                    left:2em;
+                    white-space: nowrap;
+                }
+            }
+            .ai_feedback{
+                max-width: 100%;
+                word-wrap: break-word;
+                white-space: pre-wrap;
+            }
+            
         }
         .mbti{
             display: flex;

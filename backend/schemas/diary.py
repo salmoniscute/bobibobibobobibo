@@ -19,6 +19,10 @@ class DiaryCreate(BaseModel):
     }
 
 
+class DiaryUpdate(BaseModel):
+    ai_feedback: str
+
+
 class DiaryRead(BaseModel):
     uid: str
     id: int
