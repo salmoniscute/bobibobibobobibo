@@ -110,6 +110,7 @@ export default function PostEditor(props: propsType): ReactElement {
                 console.error("Error while posting diary:", error);
             }
             updatePost();
+            updatePost();
         } else {
         }
         setContent("");

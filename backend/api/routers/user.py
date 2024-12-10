@@ -3,6 +3,27 @@ from crud.user import UserCrudManager
 from schemas import user as UserSchema
 from auth.passwd import get_password_hash
 from .depends import check_user_id
+import random
+import asyncio
+
+MBTI_TYPES = [
+    "INTJ",
+    "INTP",
+    "ENTJ",
+    "ENTP",
+    "INFJ",
+    "INFP",
+    "ENFJ",
+    "ENFP",
+    "ISTJ",
+    "ISFJ",
+    "ESTJ",
+    "ESFJ",
+    "ISTP",
+    "ISFP",
+    "ESTP",
+    "ESFP",
+]
 
 permission_denied = HTTPException(
     status_code=status.HTTP_403_FORBIDDEN, detail="Permission denied"
@@ -57,10 +78,12 @@ async def delete_user(uid: str = Depends(check_user_id)):
     return
 
 
-@router.put("/{uid}", status_code=status.HTTP_204_NO_CONTENT)
+@router.put("/{uid}", status_code=status.HTTP_200_OK)
 async def update_user(
-    updateUser: UserSchema.UserUpdate,
     uid: str = Depends(check_user_id),
 ):
-    await UserCrud.update(uid, updateUser)
-    return
+    random_mbti = random.choice(MBTI_TYPES)
+    await asyncio.sleep(10)
+    update_data = UserSchema.UserUpdate(mbti=random_mbti)
+    await UserCrud.update(uid, update_data)
+    return {"mbti": random_mbti, "uid": uid}

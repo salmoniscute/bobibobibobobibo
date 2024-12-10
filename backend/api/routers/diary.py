@@ -5,6 +5,7 @@ from .depends import check_user_id, check_diary_id
 from fastapi import BackgroundTasks
 from test import inference
 
+
 not_found = HTTPException(
     status_code=status.HTTP_404_NOT_FOUND, detail="Diary does not exist"
 )

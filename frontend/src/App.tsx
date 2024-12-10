@@ -61,7 +61,7 @@ export default function App(): ReactElement {
                             userData === null ? (
                                 <Navigate to="/login" />
                             ) : (
-                                <MainPage />
+                                <MainPage setRefreshToken={setRefreshToken} />
                             )
                         }
                     />

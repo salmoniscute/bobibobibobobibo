@@ -21,8 +21,7 @@ class UserCreate(BaseModel):
 
 
 class UserUpdate(BaseModel):
-    mbti: str = Field(min_length=1, max_length=10)
-    model_config = {"json_schema_extra": {"examples": [{"mbti": "ENFJ"}]}}
+    mbti: str
 
 
 class UserRead(BaseModel):

@@ -67,3 +67,17 @@ export async function refreshToken(){
     }
 
 }
+
+export async function updateUser(uid:string): Promise<User| null>{
+    let url = "http://localhost:8080/user/" + uid;
+    
+    try {
+        const response = await axios.put(url,);
+        return response.data;
+    }
+    catch {  
+        
+        //return ;
+    }
+    return null ; 
+}

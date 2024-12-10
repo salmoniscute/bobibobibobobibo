@@ -4,7 +4,7 @@ import {
     ReactElement,
     SetStateAction,
     useContext,
-    useMemo,
+    useRef,
     useState,
     useEffect,
 } from "react";
@@ -19,9 +19,16 @@ import { getDiaryList } from "../../api/diary";
 import { Diary } from "../../schemas/diary";
 import PostEditor from "../../components/PostEditor";
 import userDataContext from "../../context/userData";
+import { updateUser, refreshToken } from "../../api/user";
 import Dots from "../../components/Dots";
 
-export default function MainPage(): ReactElement {
+type propsType = Readonly<{
+    setRefreshToken: Dispatch<SetStateAction<string>>;
+}>;
+
+export default function MainPage(props: propsType): ReactElement {
+    const { setRefreshToken } = props;
+
     const [diaryList, setDiaryList] = useState<Array<Diary>>([]);
     const [diary, setDiary] = useState<Diary>();
     const [openEditor, setopenEditor] = useState(false);
@@ -29,7 +36,8 @@ export default function MainPage(): ReactElement {
     const [mbtiColorButton, setMbtiColorButton] = useState<string>("");
     const [mbtiColorNotice, setMbtiColorNotice] = useState<string>("");
     const [aiFeedbackTyping, setAiFeedbackTyping] = useState<string>("");
-    const [generating, setGenerating] = useState<number>(0);
+    const intervalRef = useRef<NodeJS.Timeout | null>(null);
+    const [loading, setLoading] = useState(false);
 
     const userData = useContext(userDataContext);
 
@@ -37,18 +45,39 @@ export default function MainPage(): ReactElement {
         handleDiaryList();
         setMbtiColor(userData ? userData.mbti : "ENFJ");
     }, []);
-
     useEffect(() => {
-        if (diary?.ai_feedback) {
-            typeEffect(diary.ai_feedback);
+        return () => {
+            if (intervalRef.current) {
+                clearInterval(intervalRef.current);
+            }
+        };
+    }, []);
+
+    const handleTestMBTI = async () => {
+        setLoading(true); // 顯示轉圈圈
+        try {
+            const response = await updateUser(userData?.uid || "");
+            if (userData) userData.mbti = response?.mbti || "";
+        } catch (error) {
+            console.error("Failed to test MBTI:", error);
+        } finally {
+            setLoading(false); // 隱藏轉圈圈
+            const newToken = await refreshToken();
+            setRefreshToken(newToken);
         }
-    }, [diary?.ai_feedback]);
+    };
 
     const typeEffect = (text: string) => {
+        // 清除之前的計時器
+        if (intervalRef.current) {
+            clearInterval(intervalRef.current);
+            intervalRef.current = null;
+        }
+
         setAiFeedbackTyping(""); // 清空現有的文字
         let index = 0;
 
-        const interval = setInterval(() => {
+        intervalRef.current = setInterval(() => {
             const currentChar = text.charAt(index);
             if (["!", ".", "?"].includes(currentChar)) {
                 setAiFeedbackTyping((prev) => prev + currentChar + "\n");
@@ -57,7 +86,8 @@ export default function MainPage(): ReactElement {
             }
             index++;
             if (index === text.length) {
-                clearInterval(interval);
+                clearInterval(intervalRef.current!);
+                intervalRef.current = null;
             }
         }, 50);
     };
@@ -70,20 +100,21 @@ export default function MainPage(): ReactElement {
     };
 
     const backward = () => {
-        if (currentDiary == 0) {
-            setCurrentDiary(diaryList.length - 1);
-        } else {
-            setCurrentDiary(currentDiary - 1);
-        }
-        setDiary(diaryList[currentDiary]);
+        setCurrentDiary((prevDiary) => {
+            const nextDiary =
+                prevDiary === 0 ? diaryList.length - 1 : prevDiary - 1;
+            setDiary(diaryList[nextDiary]);
+            typeEffect(diaryList[nextDiary]?.ai_feedback || "");
+            return nextDiary;
+        });
     };
     const forward = () => {
-        if (currentDiary == diaryList.length - 1) {
-            setCurrentDiary(0);
-        } else {
-            setCurrentDiary(currentDiary + 1);
-        }
-        setDiary(diaryList[currentDiary]);
+        setCurrentDiary((prevDiary) => {
+            const nextDiary = (prevDiary + 1) % diaryList.length;
+            setDiary(diaryList[nextDiary]);
+            typeEffect(diaryList[nextDiary]?.ai_feedback || "");
+            return nextDiary;
+        });
     };
 
     const handleDiaryList = () => {
@@ -94,10 +125,12 @@ export default function MainPage(): ReactElement {
             setCurrentDiary(data.length - 1);
             setDiary(lastDiary);
             console.log(lastDiary); // Log the last diary immediately
+            typeEffect(lastDiary?.ai_feedback || "");
         });
     };
 
     const handleNewPostDiary = (data: Diary) => {
+        console.log("hi");
         setDiaryList([data]);
         setDiary(data);
     };
@@ -189,10 +222,17 @@ export default function MainPage(): ReactElement {
                     isToday(
                         diaryList[diaryList.length - 1]?.release_time || ""
                     ) ? (
-                        <div>you have posted diary today</div>
+                        <div>You have posted diary today</div>
                     ) : (
-                        <div>you have not posted diary today</div>
+                        <div>You have not posted diary today</div>
                     )}
+                </div>
+                <div
+                    className="testMbtiButton"
+                    style={{ backgroundColor: mbtiColorButton }}
+                    onClick={handleTestMBTI}
+                >
+                    Test MBTI
                 </div>
                 <div className="diary">
                     {diaryList.length != 0 ? (
@@ -224,10 +264,14 @@ export default function MainPage(): ReactElement {
                         <div>nothing</div>
                     )}
                 </div>
-                <div className="mbti">
-                    <img src={`/assets/${userData?.mbti}.png`} />
-                    <p>{userData?.mbti}</p>
-                </div>
+                {loading ? (
+                    <div>hi</div>
+                ) : (
+                    <div className="mbti">
+                        <img src={`/assets/${userData?.mbti}.png`} />
+                        <p>{userData?.mbti}</p>
+                    </div>
+                )}
             </div>
             <div className={openEditor === true ? "" : "editor"}>
                 <PostEditor
