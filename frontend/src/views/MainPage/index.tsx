@@ -46,6 +46,9 @@ export default function MainPage(props: propsType): ReactElement {
         setMbtiColor(userData ? userData.mbti : "ENFJ");
     }, []);
     useEffect(() => {
+        setMbtiColor(userData ? userData.mbti : "ENFJ");
+    }, [userData]);
+    useEffect(() => {
         return () => {
             if (intervalRef.current) {
                 clearInterval(intervalRef.current);
@@ -264,14 +267,16 @@ export default function MainPage(props: propsType): ReactElement {
                         <div>nothing</div>
                     )}
                 </div>
-                {loading ? (
-                    <div>hi</div>
-                ) : (
-                    <div className="mbti">
-                        <img src={`/assets/${userData?.mbti}.png`} />
-                        <p>{userData?.mbti}</p>
-                    </div>
-                )}
+                <div className="rightBar">
+                    {loading ? (
+                        <div className="spinner"></div>
+                    ) : (
+                        <div className="mbti">
+                            <img src={`/assets/${userData?.mbti}.png`} />
+                            <p>{userData?.mbti}</p>
+                        </div>
+                    )}
+                </div>
             </div>
             <div className={openEditor === true ? "" : "editor"}>
                 <PostEditor
