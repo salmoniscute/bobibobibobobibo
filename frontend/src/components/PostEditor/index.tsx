@@ -4,6 +4,8 @@ import React, {
     useState,
     useContext,
     useEffect,
+    Dispatch,
+    SetStateAction,
 } from "react";
 import ReactQuill, { Quill } from "react-quill";
 import { Link, useParams } from "react-router-dom";
@@ -58,6 +60,7 @@ type propsType = Readonly<{
     mbtiColorNotice: string;
     mbtiColorButton: string;
     setNewDiary: (data: Diary) => void;
+    setGenerating: Dispatch<SetStateAction<boolean>>;
 }>;
 
 export default function PostEditor(props: propsType): ReactElement {
@@ -73,6 +76,7 @@ export default function PostEditor(props: propsType): ReactElement {
         mbtiColorNotice,
         mbtiColorButton,
         setNewDiary,
+        setGenerating,
     } = props;
 
     const Close = () => {
@@ -96,21 +100,17 @@ export default function PostEditor(props: propsType): ReactElement {
                 title: title,
                 content: content,
             };
+            setGenerating(true);
+            setNewDiary(diary);
+            Close();
             try {
-                const postedDiary = await postDiary(diary, uid);
-                if (postedDiary) setNewDiary(postedDiary);
-                Close();
-                const interval = setInterval(async () => {
-                    const updatedDiary = await getDiary(postedDiary?.id || 1);
-                    if (updatedDiary.ai_feedback != "") {
-                        clearInterval(interval);
-                    }
-                }, 3000);
+                await postDiary(diary, uid);
             } catch (error) {
                 console.error("Error while posting diary:", error);
+            } finally {
+                setGenerating(false);
+                updatePost();
             }
-            updatePost();
-            updatePost();
         } else {
         }
         setContent("");
@@ -131,7 +131,7 @@ export default function PostEditor(props: propsType): ReactElement {
                     <div className="text-editor">
                         <input
                             type="text"
-                            placeholder="標題｜少於20字"
+                            placeholder="Title | Less than 20 words"
                             className="title"
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}

@@ -20,20 +20,21 @@ router = APIRouter(prefix="/diary", tags=["Diary"])
 
 @router.post("", status_code=status.HTTP_201_CREATED)
 async def create_dairy(
-    background_tasks: BackgroundTasks,
     newDiary: DiarySchema.DiaryCreate,
     uid: str = Depends(check_user_id),
-    # background_tasks: BackgroundTasks = Depends(),
 ):
     diary = await DiaryCrud.create(uid, newDiary)
-    background_tasks.add_task(update_diary_with_inference, diary.id)
-    return {
-        "id": diary.id,
-        "content": diary.content,
-        "release_time": diary.release_time,
-        "title": diary.title,
-        "uid": diary.uid,
-    }
+    diary = await DiaryCrud.get(diary.id)
+    if not diary:
+        raise not_found
+
+    try:
+        ai_feedback = inference(diary.content)
+        update_data = DiarySchema.DiaryUpdate(ai_feedback=ai_feedback)
+        await DiaryCrud.update(diary.id, update_data)
+    except Exception as e:
+        print(f"Failed to update diary {diary.id} with inference: {e}")
+    return
 
 
 @router.get(

@@ -20,7 +20,6 @@ import { Diary } from "../../schemas/diary";
 import PostEditor from "../../components/PostEditor";
 import userDataContext from "../../context/userData";
 import { updateUser, refreshToken } from "../../api/user";
-import Dots from "../../components/Dots";
 
 type propsType = Readonly<{
     setRefreshToken: Dispatch<SetStateAction<string>>;
@@ -38,6 +37,7 @@ export default function MainPage(props: propsType): ReactElement {
     const [aiFeedbackTyping, setAiFeedbackTyping] = useState<string>("");
     const intervalRef = useRef<NodeJS.Timeout | null>(null);
     const [loading, setLoading] = useState(false);
+    const [generating, setGenerating] = useState(false);
 
     const userData = useContext(userDataContext);
 
@@ -57,14 +57,14 @@ export default function MainPage(props: propsType): ReactElement {
     }, []);
 
     const handleTestMBTI = async () => {
-        setLoading(true); // 顯示轉圈圈
+        setLoading(true);
         try {
             const response = await updateUser(userData?.uid || "");
             if (userData) userData.mbti = response?.mbti || "";
         } catch (error) {
             console.error("Failed to test MBTI:", error);
         } finally {
-            setLoading(false); // 隱藏轉圈圈
+            setLoading(false);
             const newToken = await refreshToken();
             setRefreshToken(newToken);
         }
@@ -133,16 +133,22 @@ export default function MainPage(props: propsType): ReactElement {
     };
 
     const handleNewPostDiary = (data: Diary) => {
-        console.log("hi");
+        setAiFeedbackTyping("");
         setDiaryList([data]);
         setDiary(data);
     };
 
     const setTimeString = (release_time: string): string => {
+        // If release_time is empty, set it to today's date
+        if (release_time == "") {
+            release_time = new Date().toISOString();
+        }
+
         const releaseDate = new Date(release_time);
-        const formattedDate = `${releaseDate.getFullYear()}年${
+
+        const formattedDate = `${releaseDate.getFullYear()} / ${
             releaseDate.getMonth() + 1
-        }月${releaseDate.getDate()}日`;
+        } / ${releaseDate.getDate()}`;
         return formattedDate;
     };
     const setMbtiColor = (mbti: string) => {
@@ -261,7 +267,13 @@ export default function MainPage(props: propsType): ReactElement {
                                     Hi {userData?.uid}
                                 </span>
                             </div>
-                            <p className="ai_feedback">{aiFeedbackTyping}</p>
+                            {generating ? (
+                                <div className="spinner_di"></div>
+                            ) : (
+                                <p className="ai_feedback">
+                                    {aiFeedbackTyping}
+                                </p>
+                            )}
                         </div>
                     ) : (
                         <div>nothing</div>
@@ -269,7 +281,7 @@ export default function MainPage(props: propsType): ReactElement {
                 </div>
                 <div className="rightBar">
                     {loading ? (
-                        <div className="spinner"></div>
+                        <div className="spinner_rb"></div>
                     ) : (
                         <div className="mbti">
                             <img src={`/assets/${userData?.mbti}.png`} />
@@ -285,6 +297,7 @@ export default function MainPage(props: propsType): ReactElement {
                     mbtiColorNotice={mbtiColorNotice}
                     mbtiColorButton={mbtiColorButton}
                     setNewDiary={handleNewPostDiary}
+                    setGenerating={setGenerating}
                 />
             </div>
         </div>

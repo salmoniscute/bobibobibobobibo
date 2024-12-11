@@ -28,7 +28,7 @@ export async function getDiary(id:number): Promise<Diary>{
     return diary ; 
 }
 
-export async function postDiary(diary:Diary , uid:string):Promise<Diary | null>{
+export async function postDiary(diary:Diary , uid:string){
     let url = "http://localhost:8080/diary?uid="+uid;
     try {
         const response = await axios.post(url,diary);
@@ -36,5 +36,5 @@ export async function postDiary(diary:Diary , uid:string):Promise<Diary | null>{
     catch(error) {  
         
     }
-    return diary;
+    return;
 }

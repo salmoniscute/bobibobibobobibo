@@ -94,6 +94,25 @@
                     white-space: nowrap;
                 }
             }
+            .spinner_di {
+                align-self: center;
+                margin-left: 1em;
+                border: 5px solid rgba(0, 0, 0, 0.1);
+                border-left-color: #4caf50;
+                border-radius: 50%;
+                width: 30px;
+                height: 30px;
+                animation: spin 1s linear infinite;
+            }
+            
+            @keyframes spin {
+                from {
+                    transform: rotate(0deg);
+                }
+                to {
+                    transform: rotate(360deg);
+                }
+            }
             .ai_feedback{
                 max-width: 100%;
                 word-wrap: break-word;
@@ -120,7 +139,7 @@
                     font-weight: bold;
                 }
             }
-            .spinner {
+            .spinner_rb {
                 align-self: center;
                 margin-left: 8em;
                 border: 10px solid rgba(0, 0, 0, 0.1);
