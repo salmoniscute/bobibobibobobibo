@@ -163,3 +163,4 @@ config.json
 .DS_Store
 
 model/
+finetuned_BERT_epoch_4.model

@@ -1,29 +1,11 @@
 from fastapi import APIRouter, HTTPException, status, Depends
 from crud.user import UserCrudManager
+from crud.diary import DiaryCrudManager
 from schemas import user as UserSchema
 from auth.passwd import get_password_hash
 from .depends import check_user_id
-import random
-import asyncio
-
-MBTI_TYPES = [
-    "INTJ",
-    "INTP",
-    "ENTJ",
-    "ENTP",
-    "INFJ",
-    "INFP",
-    "ENFJ",
-    "ENFP",
-    "ISTJ",
-    "ISFJ",
-    "ESTJ",
-    "ESFJ",
-    "ISTP",
-    "ISFP",
-    "ESTP",
-    "ESFP",
-]
+from mbti_classification import inference
+from bs4 import BeautifulSoup
 
 permission_denied = HTTPException(
     status_code=status.HTTP_403_FORBIDDEN, detail="Permission denied"
@@ -38,6 +20,7 @@ already_exists = HTTPException(
 )
 
 UserCrud = UserCrudManager()
+DiaryCrud = DiaryCrudManager()
 router = APIRouter(prefix="/user", tags=["Users"])
 
 
@@ -82,8 +65,15 @@ async def delete_user(uid: str = Depends(check_user_id)):
 async def update_user(
     uid: str = Depends(check_user_id),
 ):
-    random_mbti = random.choice(MBTI_TYPES)
-    await asyncio.sleep(10)
-    update_data = UserSchema.UserUpdate(mbti=random_mbti)
-    await UserCrud.update(uid, update_data)
-    return {"mbti": random_mbti, "uid": uid}
+    diaries = await DiaryCrud.get_by_user_id(uid)
+    combined_content = " ".join(
+        BeautifulSoup(diary.content, "html.parser").get_text() for diary in diaries
+    )
+    try:
+        mbti = inference(combined_content[:512])
+        update_data = UserSchema.UserUpdate(mbti=mbti)
+        await UserCrud.update(uid, update_data)
+    except Exception as e:
+        print(f"Failed to update user {uid} with inference: {e}")
+
+    return {"mbti": mbti, "uid": uid}

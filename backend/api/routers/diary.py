@@ -3,7 +3,7 @@ from crud.diary import DiaryCrudManager
 from schemas import diary as DiarySchema
 from .depends import check_user_id, check_diary_id
 from fastapi import BackgroundTasks
-from test import inference
+from feedback_generating import inference
 
 
 not_found = HTTPException(
@@ -65,7 +65,6 @@ async def delete_diary(diary_id: int = Depends(check_diary_id)):
 
 
 async def update_diary_with_inference(diary_id: int):
-    # 獲取日記資料
     diary = await DiaryCrud.get(diary_id)
     if not diary:
         raise not_found
