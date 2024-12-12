@@ -77,3 +77,12 @@ async def update_user(
         print(f"Failed to update user {uid} with inference: {e}")
 
     return {"mbti": mbti, "uid": uid}
+
+
+@router.put("/demo/{uid}", status_code=status.HTTP_204_NO_CONTENT)
+async def update_user_demo(
+    updateUser: UserSchema.UserUpdateDemo,
+    uid: str = Depends(check_user_id),
+):
+    await UserCrud.update(uid, updateUser)
+    return
