@@ -61,7 +61,7 @@ export default function NavigateBar(): ReactElement {
     return (
         <div id="navigateBar" style={{ backgroundColor: mbtiColorNotice }}>
             <Link to="/" className="logo">
-                <h1>HIHI</h1>
+                <h1>WriteType</h1>
             </Link>
             {userData === null ? (
                 <div className="buttons">

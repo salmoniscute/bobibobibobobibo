@@ -60,7 +60,13 @@ export default function Footer(): ReactElement {
     };
     return (
         <div id="footer" style={{ backgroundColor: mbtiColorNotice }}>
-            <div></div>
+            <div className="leftFooter">
+                <p>
+                    Copyright © National Cheng Kung University all rights
+                    reserved
+                </p>
+                <p>Written by Salmon</p>
+            </div>
         </div>
     );
 }
